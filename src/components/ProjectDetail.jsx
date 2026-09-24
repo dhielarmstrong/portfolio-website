@@ -1,14 +1,42 @@
-import { X, ExternalLink, CheckCircle2 } from "lucide-react";
+import {
+  X,
+  ExternalLink,
+  CheckCircle2,
+  Cpu,
+  Wrench,
+  Database,
+  Code2,
+  Activity,
+  Layers,
+} from "lucide-react";
+
+const categoryIcons = {
+  "IoT & Software": Cpu,
+  Instrumentation: Activity,
+  "Electronics & IoT": Cpu,
+  Electronics: Code2,
+  "Environmental Monitoring": Activity,
+  "Environmental Engineering": Layers,
+  "Maintenance & Troubleshooting": Wrench,
+  "Industrial Automation": Cpu,
+};
 
 function ProjectDetail({ project, onClose }) {
   if (!project) return null;
 
+  const CategoryIcon =
+    categoryIcons[project.category] || Layers;
+
   return (
-    <div className="project-modal-overlay" onClick={onClose}>
+    <div
+      className="project-modal-overlay"
+      onClick={onClose}
+    >
       <div
         className="project-modal"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* CLOSE BUTTON */}
         <button
           className="project-modal-close"
           onClick={onClose}
@@ -17,16 +45,19 @@ function ProjectDetail({ project, onClose }) {
           <X size={22} />
         </button>
 
+        {/* HEADER */}
         <div className="project-modal-header">
-          <span className="project-category">
-            {project.category}
-          </span>
+          <div className="project-detail-category">
+            <CategoryIcon size={16} />
+            <span>{project.category}</span>
+          </div>
 
           <h2>{project.title}</h2>
 
           <p>{project.description}</p>
         </div>
 
+        {/* META */}
         <div className="project-detail-meta">
           <div>
             <span>MY ROLE</span>
@@ -39,107 +70,130 @@ function ProjectDetail({ project, onClose }) {
           </div>
         </div>
 
+        {/* PROJECT IMAGE */}
+{project.image && (
+  <div className="project-detail-image">
+    <img
+      src={project.image}
+      alt={`${project.title} dashboard`}
+    />
+  </div>
+)}
+
+        {/* OVERVIEW */}
         <div className="project-detail-section">
           <h3>Project Overview</h3>
 
           <p>
-            Project ini merupakan pengembangan sistem monitoring
-            hidroponik berbasis web untuk memantau kondisi tanaman
-            melalui beberapa parameter lingkungan dan kualitas air.
+            {project.overview ||
+              project.description}
           </p>
         </div>
 
+        {/* SCOPE */}
+        {project.scope?.length > 0 && (
+          <div className="project-detail-section">
+            <h3>Project Scope</h3>
+
+            <div className="project-feature-list">
+              {project.scope.map((item) => (
+                <div
+                  className="project-feature"
+                  key={item}
+                >
+                  <CheckCircle2 size={18} />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TECHNOLOGIES */}
         <div className="project-detail-section">
-          <h3>Technologies</h3>
+          <h3>Technologies & Tools</h3>
 
           <div className="project-technologies">
-            {project.technologies?.map((technology) => (
-              <span key={technology}>
-                {technology}
-              </span>
-            ))}
+            {project.technologies?.map(
+              (technology) => (
+                <span key={technology}>
+                  {technology}
+                </span>
+              )
+            )}
           </div>
         </div>
 
+        {/* KEY FEATURES */}
         <div className="project-detail-section">
           <h3>Key Features</h3>
 
           <div className="project-feature-list">
-            {project.highlights?.map((highlight) => (
-              <div
-                className="project-feature"
-                key={highlight}
-              >
-                <CheckCircle2 size={18} />
-                <span>{highlight}</span>
-              </div>
-            ))}
+            {project.highlights?.map(
+              (highlight) => (
+                <div
+                  className="project-feature"
+                  key={highlight}
+                >
+                  <CheckCircle2 size={18} />
+                  <span>{highlight}</span>
+                </div>
+              )
+            )}
           </div>
         </div>
 
-        {project.title === "Hydroponic Monitoring System" && (
-          <>
-            <div className="project-detail-section">
-              <h3>Monitoring Parameters</h3>
+        {/* PARAMETERS */}
+        {project.parameters?.length > 0 && (
+          <div className="project-detail-section">
+            <h3>Monitoring Parameters</h3>
 
-              <div className="parameter-grid">
-                <span>pH</span>
-                <span>EC</span>
-                <span>TDS</span>
-                <span>Water Temperature</span>
-                <span>Water Level</span>
-                <span>Flow</span>
-              </div>
+            <div className="parameter-grid">
+              {project.parameters.map(
+                (parameter) => (
+                  <span key={parameter}>
+                    {parameter}
+                  </span>
+                )
+              )}
             </div>
-
-            <div className="project-detail-section">
-              <h3>System Architecture</h3>
-
-              <div className="architecture">
-                <div className="architecture-item">
-                  Sensor / Simulation
-                </div>
-
-                <span>↓</span>
-
-                <div className="architecture-item">
-                  ESP32
-                </div>
-
-                <span>↓</span>
-
-                <div className="architecture-item">
-                  Node.js API
-                </div>
-
-                <span>↓</span>
-
-                <div className="architecture-item">
-                  SQLite
-                </div>
-
-                <span>↓</span>
-
-                <div className="architecture-item">
-                  React Dashboard
-                </div>
-              </div>
-            </div>
-
-            <div className="project-detail-section">
-              <h3>Development Status</h3>
-
-              <p>
-                Saat ini project telah memiliki dashboard monitoring,
-                REST API, SQLite database, historical data,
-                device management, simulation mode, dan CSV export.
-                Integrasi ESP32 dan sensor fisik merupakan tahap
-                pengembangan berikutnya.
-              </p>
-            </div>
-          </>
+          </div>
         )}
 
+        {/* SYSTEM ARCHITECTURE */}
+        {project.architecture?.length > 0 && (
+          <div className="project-detail-section">
+            <h3>System Architecture</h3>
+
+            <div className="architecture">
+              {project.architecture.map(
+                (item, index) => (
+                  <div key={`${item}-${index}`}>
+                    <div className="architecture-item">
+                      {item}
+                    </div>
+
+                    {index <
+                      project.architecture.length - 1 && (
+                      <span>↓</span>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* DEVELOPMENT / PROJECT STATUS */}
+        {project.status && (
+          <div className="project-detail-section">
+            <h3>Project Status</h3>
+
+            <p>{project.status}</p>
+          </div>
+        )}
+
+        {/* ACTIONS */}
         <div className="project-detail-actions">
           <button
             className="project-action secondary"
